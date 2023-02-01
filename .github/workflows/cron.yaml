@@ -1,0 +1,18 @@
+name: cron
+
+on:
+  schedule:
+    - cron: '0 * * * *' # hourly
+
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: deno task start
