@@ -1,5 +1,5 @@
 {
   "tasks": {
-    "dev": "AUTH_TOKEN=test deno run --watch --allow-net --allow-env --allow-read api.ts"
+    "start": "deno run --allow-net --allow-env --allow-read main.ts"
   }
 }

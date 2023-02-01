@@ -1,13 +1,6 @@
 import { Client, collectPaginatedAPI } from 'npm:@notionhq/client@2'
 import { PageObjectResponse } from 'npm:@notionhq/client@2/helpers'
-
-export interface Repo {
-  name: string
-  about?: string
-  stars: number
-  prs: number
-  issues: number
-}
+import type { Repo } from './types.ts'
 
 const notion = new Client({
   auth: Deno.env.get('NOTION_TOKEN'),
@@ -39,7 +32,6 @@ const database_id =
 //   },
 //   url: "https://www.notion.so/sdk-typescript-999a8de3947c4f0aa613c8d1554d2d7a"
 // }
-
 export async function updateNotion(repos: Repo[]) {
   const pages = (await collectPaginatedAPI(notion.databases.query, {
     database_id,
@@ -58,24 +50,18 @@ export async function updateNotion(repos: Repo[]) {
     const page = pagesByName[repo.name]
     const isNewRepo = !page
     if (isNewRepo) {
-      console.log('isNewRepo:', isNewRepo)
-      console.log(
-        await notion.pages.create({
-          parent: {
-            type: 'database_id',
-            database_id,
-          },
-          properties: getProperties(repo),
-        })
-      )
+      await notion.pages.create({
+        parent: {
+          type: 'database_id',
+          database_id,
+        },
+        properties: getProperties(repo),
+      })
     } else {
-      console.log(
-        'old',
-        await notion.pages.update({
-          page_id: page.id,
-          properties: getProperties(repo),
-        })
-      )
+      await notion.pages.update({
+        page_id: page.id,
+        properties: getProperties(repo),
+      })
     }
   }
 }
@@ -101,14 +87,23 @@ function getProperties(repo: Repo) {
         },
       ],
     },
-    PRs: {
-      number: repo.prs,
-    },
-    Issues: {
+    'Issues & PRs': {
       number: repo.issues,
     },
     Stars: {
       number: repo.stars,
     },
+    'Top contributors': {
+      multi_select: repo.contributors.map((contributor) => ({
+        name: contributor.name,
+      })),
+    },
+    ...(repo.language && {
+      Lang: {
+        select: {
+          name: repo.language,
+        },
+      },
+    }),
   }
 }
