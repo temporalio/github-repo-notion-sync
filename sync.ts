@@ -6,20 +6,9 @@ export async function syncGithubToNotion() {
   let repos = await getRepos()
   repos = await addContributors(repos)
   // repos = await addTeams(repos)
-  // console.log('repos:', repos.at(-1))
   console.log('repos:', transformRepos(repos))
   console.log('repos:', repos.length)
   await updateNotion(transformRepos(repos))
-  // await updateNotion([
-  //   { name: 'sdk-typescript', stars: 10, issues: 1, prs: 2 },
-  //   {
-  //     name: 'samples-typescript',
-  //     stars: 20,
-  //     about: 'best samples',
-  //     issues: 5,
-  //     prs: 6,
-  //   },
-  // ])
 }
 
 function transformRepos(repos: GithubRepoWithContributors[]): Repo[] {
