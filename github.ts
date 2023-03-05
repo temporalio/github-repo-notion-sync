@@ -23,6 +23,13 @@ export async function getRepos() {
     const batch = await fetchGithubAPI(
       `https://api.github.com/orgs/temporalio/repos?type=all&per_page=100&page=${page}`
     )
+
+    if (!Array.isArray(batch)) {
+      console.log('batch:', typeof batch)
+      console.log('batch:', batch)
+      throw new Error('GH API returned non-array')
+    }
+
     if (batch.length === 0) {
       return repos
     }
