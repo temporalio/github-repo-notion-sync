@@ -5,6 +5,8 @@ export interface Repo {
   stars: number
   issues: number
   contributors: User[]
+  teamAccess: TeamAccess
+  individualAccess: IndividualAccess
 }
 
 // example GitHub repo:
@@ -128,11 +130,37 @@ export interface GithubRepoWithContributors extends GithubRepo {
   contributors: User[]
 }
 
-// export interface GithubRepoWithContributorsAndAdmins extends GithubRepo {
-//   : User[]
-// }
+export interface GithubRepoWithContributorsAndAccessLists
+  extends GithubRepoWithContributors {
+  teamAccess: TeamAccess
+  individualAccess: IndividualAccess
+}
+
+export interface IndividualAccess {
+  read: User[]
+  triage: User[]
+  write: User[]
+  maintain: User[]
+  admin: User[]
+}
+
+export interface TeamAccess {
+  pull: string[]
+  triage: string[]
+  push: string[]
+  maintain: string[]
+  admin: string[]
+}
 
 export interface User {
   name: string
   url: string
 }
+
+// export interface CollaboratorPermissions {
+//   pull: boolean
+//   triage: boolean
+//   push: boolean
+//   maintain: boolean
+//   admin: boolean
+// }

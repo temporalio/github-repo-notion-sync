@@ -41,29 +41,46 @@ export async function updateNotion(repos: Repo[]) {
   for (const page of pages) {
     const name = page.properties.Name.title[0]?.plain_text
     pagesByName[name] = page
-    if (name === 'sdk-typescript') {
-      console.log('found', page.properties.Name.title[0])
-    }
   }
 
+  // update or create pages
   for (const repo of repos) {
     const page = pagesByName[repo.name]
     const isNewRepo = !page
-    if (isNewRepo) {
-      await notion.pages.create({
-        parent: {
-          type: 'database_id',
-          database_id,
-        },
-        properties: getProperties(repo),
-      })
-    } else {
-      await notion.pages.update({
-        page_id: page.id,
-        properties: getProperties(repo),
-      })
+    try {
+      if (isNewRepo) {
+        console.log(`creating repo: ${repo.name}`)
+        await notion.pages.create({
+          parent: {
+            type: 'database_id',
+            database_id,
+          },
+          properties: getProperties(repo),
+        })
+      } else {
+        console.log(`updating repo: ${repo.name}`)
+        await notion.pages.update({
+          page_id: page.id,
+          properties: getProperties(repo),
+        })
+      }
+    } catch (e) {
+      console.error('Error talking to Notion API:', e)
     }
   }
+
+  // remove repos that no longer exist
+  // const repoNames = new Set(repos.map((repo) => repo.name))
+  // for (const page of pages) {
+  //   const name = page.properties.Name.title[0]?.plain_text
+  //   if (!repoNames.has(name)) {
+  //     console.log(`archiving repo: ${name}`)
+  //     await notion.pages.update({
+  //       page_id: page.id,
+  //       archived: true,
+  //     })
+  //   }
+  // }
 }
 
 function getProperties(repo: Repo) {
@@ -105,5 +122,55 @@ function getProperties(repo: Repo) {
         },
       },
     }),
+    'Team admins': {
+      multi_select: repo.teamAccess.admin.map((team) => ({
+        name: team,
+      })),
+    },
+    'Individual admins': {
+      multi_select: repo.individualAccess.admin.map((user) => ({
+        name: user.name,
+      })),
+    },
+    'Teams with role: maintain': {
+      multi_select: repo.teamAccess.maintain.map((team) => ({
+        name: team,
+      })),
+    },
+    'Individuals with role: maintain': {
+      multi_select: repo.individualAccess.maintain.map((user) => ({
+        name: user.name,
+      })),
+    },
+    'Teams with role: triage': {
+      multi_select: repo.teamAccess.triage.map((team) => ({
+        name: team,
+      })),
+    },
+    'Individuals with role: triage': {
+      multi_select: repo.individualAccess.triage.map((user) => ({
+        name: user.name,
+      })),
+    },
+    'Teams with role: write': {
+      multi_select: repo.teamAccess.push.map((team) => ({
+        name: team,
+      })),
+    },
+    'Individuals with role: write': {
+      multi_select: repo.individualAccess.write.map((user) => ({
+        name: user.name,
+      })),
+    },
+    'Teams with role: read': {
+      multi_select: repo.teamAccess.pull.map((team) => ({
+        name: team,
+      })),
+    },
+    'Individuals with role: read': {
+      multi_select: repo.individualAccess.read.map((user) => ({
+        name: user.name,
+      })),
+    },
   }
 }
