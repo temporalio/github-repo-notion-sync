@@ -1,13 +1,13 @@
-import { Client, collectPaginatedAPI } from 'npm:@notionhq/client@2'
-import { PageObjectResponse } from 'npm:@notionhq/client@2/helpers'
-import type { Repo } from './types.ts'
+import { Client, collectPaginatedAPI } from '@notionhq/client'
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import type { Repo } from './types'
 
 const notion = new Client({
-  auth: Deno.env.get('NOTION_TOKEN'),
+  auth: process.env.NOTION_TOKEN,
 })
 
 const database_id =
-  Deno.env.get('NOTION_DATABASE_ID') || '3aa5a298de95439799316fca0d8a765c'
+  process.env.NOTION_DATABASE_ID || '3aa5a298de95439799316fca0d8a765c'
 
 // example page:
 // {
@@ -39,7 +39,7 @@ export async function updateNotion(repos: Repo[]) {
 
   const pagesByName: Record<string, PageObjectResponse> = {}
   for (const page of pages) {
-    const name = page.properties.Name.title[0]?.plain_text
+    const name = (page.properties.Name as any).title[0]?.plain_text
     pagesByName[name] = page
   }
 

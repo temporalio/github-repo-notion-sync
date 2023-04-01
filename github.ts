@@ -1,11 +1,12 @@
-import { axios } from './axios.ts'
+import { axios } from './axios'
 import type {
   GithubRepo,
   GithubRepoWithContributors,
   GithubRepoWithContributorsAndAccessLists,
   IndividualAccess,
+  TeamAccess,
   User,
-} from './types.ts'
+} from './types'
 
 const fetchGithubAPI = async (
   url: string,
@@ -15,7 +16,7 @@ const fetchGithubAPI = async (
     .get(url, {
       headers: {
         Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${Deno.env.get('GITHUB_TOKEN')}`,
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
         'X-GitHub-Api-Version': '2022-11-28',
       },
       ...opts,
@@ -37,7 +38,7 @@ async function fetchPaginatedGithubAPI(
   url: string,
   opts: Record<string, unknown> = {}
 ) {
-  const results = []
+  const results: any[] = []
   let page = 1
   while (true) {
     const batch = await fetchGithubAPI(`${url}per_page=100&page=${page}`, opts)
@@ -70,14 +71,14 @@ export async function getRepos(): Promise<GithubRepo[]> {
   // ]
 }
 
-export async function getTeammates(): Promise<Set<string>> {
+export async function getTeammates(): Promise<string[]> {
   // https://docs.github.com/en/rest/orgs/members?apiVersion=2022-11-28#list-organization-members
   const users = await fetchPaginatedGithubAPI(
     `https://api.github.com/orgs/temporalio/members?`,
     { cache: false }
   )
 
-  return new Set(users.map((user) => user.login))
+  return users.map((user) => user.login)
 }
 
 export async function addContributors(
@@ -107,7 +108,7 @@ export async function addContributors(
 
 export async function addCollaboratorsAndTeams(
   repos: GithubRepoWithContributors[],
-  teammates: Set<string>
+  teammates: string[]
 ): Promise<GithubRepoWithContributorsAndAccessLists[]> {
   // Don't do in parallel to avoid 403 errors (don't know why they were 403)
   // return await Promise.all(
@@ -132,7 +133,7 @@ export async function addCollaboratorsAndTeams(
     }
     if (Array.isArray(teams)) {
       for (const team of teams) {
-        repo.teamAccess[team.permission].push(team.name)
+        repo.teamAccess[team.permission as keyof TeamAccess].push(team.name)
       }
     }
 
@@ -151,10 +152,11 @@ export async function addCollaboratorsAndTeams(
     //   )
     // )
     // const collaborators = pages.flat()
+    const teammatesSet = new Set(teammates)
     const outsideCollaborators = collaborators.filter(
-      (collaborator) => !teammates.has(collaborator.login)
+      (collaborator) => !teammatesSet.has(collaborator.login)
     )
-    console.log('outsideCollaborators:', repo.name, outsideCollaborators)
+    // console.log('outsideCollaborators:', repo.name, outsideCollaborators)
 
     repo.individualAccess = {
       read: [],

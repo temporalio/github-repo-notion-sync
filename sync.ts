@@ -1,11 +1,16 @@
-import {
+import { proxyActivities } from '@temporalio/workflow'
+import type * as activities from './activities'
+import type { GithubRepoWithContributorsAndAccessLists, Repo } from './types'
+
+const {
+  updateNotion,
   getRepos,
   getTeammates,
   addContributors,
   addCollaboratorsAndTeams,
-} from './github.ts'
-import { updateNotion } from './notion.ts'
-import type { GithubRepoWithContributorsAndAccessLists, Repo } from './types.ts'
+} = proxyActivities<typeof activities>({
+  startToCloseTimeout: '10m',
+})
 
 export async function syncGithubToNotion() {
   const [repos, teammates] = await Promise.all([getRepos(), getTeammates()])

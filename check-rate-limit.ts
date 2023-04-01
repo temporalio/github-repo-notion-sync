@@ -1,10 +1,10 @@
 // https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#checking-your-rate-limit-status
 const response = await fetch(
-  `https://api.github.com/users/${Deno.env.get('USER')}`,
+  `https://api.github.com/users/${process.env.USER}`,
   {
     headers: {
       Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${Deno.env.get('GITHUB_TOKEN')}`,
+      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
       'X-GitHub-Api-Version': '2022-11-28',
     },
   }

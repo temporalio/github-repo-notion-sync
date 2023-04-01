@@ -1,4 +1,4 @@
-import Axios from 'npm:axios@1'
-import { setupCache } from 'npm:axios-cache-interceptor@1'
+import Axios from 'axios'
+import { setupCache } from 'axios-cache-interceptor'
 
 export const axios = setupCache(Axios)
