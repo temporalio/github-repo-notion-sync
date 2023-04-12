@@ -39,7 +39,7 @@ GITHUB_TOKEN="bar" USER="github_username" npm run check-rate-limit
 ## Deployment
 
 - Get a [Cloud account](https://temporal.io/cloud) 
-- Deploy this code somewhere that supports long-running Node processes
+- Deploy this repo somewhere that supports long-running Node processes
 - Set these env vars:
 
 ```
