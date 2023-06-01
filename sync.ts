@@ -20,7 +20,7 @@ export async function syncGithubToNotion() {
     teammates
   )
   const transformedRepos = transformRepos(completeRepos)
-  console.log('repos:', repos.length)
+  console.log('Total repo count:', repos.length)
   await updateNotion(transformedRepos)
 }
 

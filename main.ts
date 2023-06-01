@@ -1,7 +1,7 @@
 import { NativeConnection, Worker } from '@temporalio/worker'
 import * as activities from './activities'
 import { getConnectionOptions, namespace, taskQueue } from './connection'
-import { createOrUpdateSchedule } from './createOrUpdateSchedule'
+import { createOrUpdateSchedule } from './create-or-update-schedule'
 
 async function run() {
   const connection = await NativeConnection.connect(getConnectionOptions())

@@ -4,7 +4,8 @@ import { getConnectionOptions, namespace, taskQueue } from './connection'
 
 const scheduleId = 'gh-notion-sync-singleton'
 
-// ScheduleUpdateOptions doesn't have scheduleId and the action type is different
+// use any because ScheduleUpdateOptions doesn't have scheduleId and the action type is different
+// https://github.com/temporalio/sdk-typescript/issues/1092
 const scheduleOptions: any = {
   action: {
     type: 'startWorkflow',
@@ -33,7 +34,6 @@ export async function createOrUpdateSchedule() {
   try {
     // https://typescript.temporal.io/api/classes/client.ScheduleClient#create
     const schedule = await client.schedule.create(scheduleOptions)
-    console.log('CREATED SCHEDULE', schedule)
   } catch (e) {
     if (
       typeof e === 'object' &&

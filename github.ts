@@ -110,10 +110,8 @@ export async function addCollaboratorsAndTeams(
   repos: GithubRepoWithContributors[],
   teammates: string[]
 ): Promise<GithubRepoWithContributorsAndAccessLists[]> {
-  // Don't do in parallel to avoid 403 errors (don't know why they were 403)
-  // return await Promise.all(
-  //   repos.map(async (repoWithoutAccessList) => {
   const results = []
+  // Don't do in parallel to avoid 403 errors (don't know why they were 403)
   for (const repoWithoutAccessList of repos) {
     const repo =
       repoWithoutAccessList as GithubRepoWithContributorsAndAccessLists
@@ -141,22 +139,10 @@ export async function addCollaboratorsAndTeams(
     const collaborators = await fetchPaginatedGithubAPI(
       `https://api.github.com/repos/temporalio/${repo.name}/collaborators?`
     )
-
-    // Will work until we have > 1000 collaborators on a repo
-    // const pages = await Promise.all(
-    //   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
-    //     (pageNumber) =>
-    //       fetchGithubAPI(
-    //         `https://api.github.com/repos/temporalio/${repo.name}/collaborators?per_page=100&page=${pageNumber}`
-    //       ).catch(() => []) // ignore the 403 errors that come from requesting nonexistant pages
-    //   )
-    // )
-    // const collaborators = pages.flat()
     const teammatesSet = new Set(teammates)
     const outsideCollaborators = collaborators.filter(
       (collaborator) => !teammatesSet.has(collaborator.login)
     )
-    // console.log('outsideCollaborators:', repo.name, outsideCollaborators)
 
     repo.individualAccess = {
       read: [],
@@ -172,29 +158,12 @@ export async function addCollaboratorsAndTeams(
           url: string
           login: string
           role_name: keyof IndividualAccess
-          // permissions: CollaboratorPermissions
         }) => {
-          // console.log('collaborator:', collaborator)
           const user = await fetchGithubAPI(collaborator.url)
-          // console.log('collaborator.role_name:', collaborator.role_name)
           repo.individualAccess[collaborator.role_name].push({
             url: collaborator.url,
             name: user.name || collaborator.login,
           })
-          // for (const permission in collaborator.permissions) {
-          //   repo[permission] ||= []
-
-          //   if (
-          //     collaborator.permissions[
-          //       permission as keyof CollaboratorPermissions
-          //     ]
-          //   ) {
-          //     repo[permission].push({
-          //       url: collaborator.url,
-          //       name: user.name || collaborator.login,
-          //     })
-          //   }
-          // }
         }
       )
     )
@@ -204,7 +173,6 @@ export async function addCollaboratorsAndTeams(
   return results
 }
 
-// deno-lint-ignore no-explicit-any
 async function fetchUsers(shallowUsers: any[]): Promise<User[]> {
   return await Promise.all(
     shallowUsers.map(
