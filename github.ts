@@ -64,11 +64,6 @@ export async function getRepos(): Promise<GithubRepo[]> {
     `https://api.github.com/orgs/temporalio/repos?type=all&`,
     { cache: false }
   )
-  // return [
-  //   await fetchGithubAPI(
-  //     `https://api.github.com/repos/temporalio/temporalite`
-  //   ),
-  // ]
 }
 
 export async function getTeammates(): Promise<string[]> {
