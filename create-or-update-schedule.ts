@@ -2,7 +2,7 @@ import { Connection, Client } from '@temporalio/client'
 import { syncGithubToNotion } from './sync'
 import { getConnectionOptions, namespace, taskQueue } from './connection'
 
-const scheduleId = 'gh-notion-sync-singleton'
+const scheduleId = 'gh-notion-sync'
 
 // use any because ScheduleUpdateOptions doesn't have scheduleId and the action type is different
 // https://github.com/temporalio/sdk-typescript/issues/1092
