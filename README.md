@@ -39,13 +39,15 @@ GITHUB_TOKEN="bar" USER="github_username" npm run check-rate-limit
 ## Deployment
 
 - Get a [Cloud account](https://temporal.io/cloud) 
-- Deploy this repo somewhere that supports long-running Node processes
+- Deploy this repo somewhere that supports long-running Node processes, like a [background worker on Render](https://render.com/docs/background-workers).
 - Set these env vars:
 
 ```
 NOTION_TOKEN="<notion integration token>"
 GITHUB_TOKEN="<personal access token with org read permissions>"
 NODE_ENV="production"
+TEMPORAL_SERVER="loren.a2dd6.tmprl.cloud:7233"
+NAMESPACE="loren.a2dd6"
 TEMPORAL_CLOUD_CERT="-----BEGIN CERTIFICATE----- EUsd..."
 TEMPORAL_CLOUD_KEY="-----BEGIN PRIVATE KEY----- LQaz..."
 ```
