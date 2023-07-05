@@ -104,6 +104,11 @@ function getProperties(repo: Repo) {
         },
       ],
     },
+    'Last commit': {
+      date: {
+        start: repo.lastCommit,
+      },
+    },
     'Issues & PRs': {
       number: repo.issues,
     },

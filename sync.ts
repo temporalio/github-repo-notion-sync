@@ -36,5 +36,6 @@ function transformRepos(
     contributors: repo.contributors,
     teamAccess: repo.teamAccess,
     individualAccess: repo.individualAccess,
+    lastCommit: repo.pushed_at,
   }))
 }

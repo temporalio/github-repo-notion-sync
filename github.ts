@@ -60,10 +60,12 @@ async function fetchPaginatedGithubAPI(
 
 export async function getRepos(): Promise<GithubRepo[]> {
   // https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28
-  return await fetchPaginatedGithubAPI(
-    `https://api.github.com/orgs/temporalio/repos?type=all&`,
-    { cache: false }
-  )
+  return (
+    await fetchPaginatedGithubAPI(
+      `https://api.github.com/orgs/temporalio/repos?type=all&`,
+      { cache: false }
+    )
+  ).filter((repo) => !repo.archived)
 }
 
 export async function getTeammates(): Promise<string[]> {

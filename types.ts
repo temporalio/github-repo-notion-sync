@@ -7,6 +7,7 @@ export interface Repo {
   contributors: User[]
   teamAccess: TeamAccess
   individualAccess: IndividualAccess
+  lastCommit: string
 }
 
 // example GitHub repo:
@@ -124,6 +125,8 @@ export interface GithubRepo {
   stargazers_count: number
   open_issues: number
   language: string | null
+  archived: boolean
+  pushed_at: string
 }
 
 export interface GithubRepoWithContributors extends GithubRepo {
