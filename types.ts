@@ -8,6 +8,7 @@ export interface Repo {
   teamAccess: TeamAccess
   individualAccess: IndividualAccess
   lastCommit: string
+  public: boolean
 }
 
 // example GitHub repo:
@@ -126,6 +127,7 @@ export interface GithubRepo {
   open_issues: number
   language: string | null
   archived: boolean
+  private: boolean
   pushed_at: string
 }
 

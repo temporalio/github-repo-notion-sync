@@ -112,6 +112,9 @@ function getProperties(repo: Repo) {
     'Issues & PRs': {
       number: repo.issues,
     },
+    Public: {
+      checkbox: repo.public,
+    },
     Stars: {
       number: repo.stars,
     },

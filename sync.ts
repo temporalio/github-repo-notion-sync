@@ -37,5 +37,6 @@ function transformRepos(
     teamAccess: repo.teamAccess,
     individualAccess: repo.individualAccess,
     lastCommit: repo.pushed_at,
+    public: !repo.private,
   }))
 }
