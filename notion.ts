@@ -70,17 +70,17 @@ export async function updateNotion(repos: Repo[]) {
   }
 
   // remove repos that no longer exist
-  // const repoNames = new Set(repos.map((repo) => repo.name))
-  // for (const page of pages) {
-  //   const name = page.properties.Name.title[0]?.plain_text
-  //   if (!repoNames.has(name)) {
-  //     console.log(`archiving repo: ${name}`)
-  //     await notion.pages.update({
-  //       page_id: page.id,
-  //       archived: true,
-  //     })
-  //   }
-  // }
+  const repoNames = new Set(repos.map((repo) => repo.name))
+  for (const page of pages) {
+    const name = (page.properties.Name as any).title[0]?.plain_text
+    if (!repoNames.has(name)) {
+      console.log(`archiving repo: ${name}`)
+      await notion.pages.update({
+        page_id: page.id,
+        archived: true,
+      })
+    }
+  }
 }
 
 function getProperties(repo: Repo) {

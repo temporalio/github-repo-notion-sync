@@ -5,6 +5,7 @@
   "main": "main.ts",
   "scripts": {
     "start": "ts-node main.ts",
+    "run-once": "ts-node run-once.ts",
     "check-rate-limit": "ts-node check-rate-limit.ts"
   },
   "repository": {
